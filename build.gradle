@@ -1,0 +1,45 @@
+ext {
+    dockerImageName = "shortscore-server"
+    version = "1"
+    dockerTagName = "$dockerImageName:$version"
+    dockerContainerName = "${dockerImageName}Container"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+task dockerRun(type: Exec) {
+    group 'Docker'
+    description "Run the shortscore server"
+    commandLine 'docker'
+    args = ['run', '--rm', '--name', dockerContainerName, '--publish', '5000:5000', dockerTagName]
+}
+
+task dockerStop(type: Exec) {
+    group 'Docker'
+    description 'Stop the shortscore server'
+    commandLine 'docker'
+    args = ['rm', '--force', '--volumes', dockerContainerName]
+}
+
+task dockerStatus(type: Exec) {
+    group 'Docker'
+    description 'Display the process status of shortscore server docker container'
+    commandLine 'docker'
+    args = ['ps', '--all', '--filter', "name=$dockerContainerName"]
+}
+
+task dockerBuild(type: Exec) {
+    group 'Docker'
+    description "Build the docker image."
+    commandLine 'docker'
+    args = ['build', '--tag', dockerTagName, "."]
+}
+
+task dockerPush(type: Exec) {
+    group 'Docker'
+    description 'Push the docker image with the current tag'
+    commandLine 'docker'
+    args = ['push', dockerTagName]
+}
