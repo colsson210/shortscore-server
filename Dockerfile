@@ -4,11 +4,14 @@ FROM python:2.7.14
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-ADD . /app
+ADD requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install -U flask-cors
+
+# Copy the current directory contents into the container at /app
+ADD . /app
 
 # Make port 80 available to the world outside this container
 EXPOSE 5000
